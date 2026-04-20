@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import { LogOut, Home, Compass, User } from 'lucide-react';
+import { LogOut, Home, Compass, User, LayoutGrid, ShieldCheck } from 'lucide-react';
 
 const Navbar = () => {
   const { user, logout } = useContext(AuthContext);
@@ -13,31 +13,40 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-surface border-b border-gray-800 p-4 sticky top-0 z-50">
-      <div className="container mx-auto flex justify-between items-center">
-        <Link to="/" className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">
-          ResearchHub
+    <nav className="sticky top-0 z-50 px-6 py-4">
+      <div className="liquid-glass rounded-full max-w-6xl mx-auto px-5 py-2.5 flex justify-between items-center" style={{background: 'rgba(5,5,10,0.7)'}}>
+        <Link to="/" className="flex items-center gap-2 group">
+          <span className="text-white font-semibold text-lg tracking-tight">ResearchHub</span>
         </Link>
-        <div className="flex gap-4 items-center">
+
+        <div className="flex gap-1 items-center">
           {user ? (
             <>
-              <Link to="/dashboard" className="text-gray-300 hover:text-white flex items-center gap-1"><Home size={18} /> Dashboard</Link>
-              <Link to="/ideas" className="text-gray-300 hover:text-white flex items-center gap-1"><Compass size={18} /> Browse</Link>
-              <Link to="/profile" className="text-gray-300 hover:text-white flex items-center gap-1"><User size={18} /> Profile</Link>
+              <Link to="/dashboard" className="flex items-center gap-1.5 text-white/60 hover:text-white px-3 py-1.5 rounded-full hover:bg-white/5 text-sm font-medium transition-all">
+                <Home size={15} /><span className="hidden sm:inline">Dashboard</span>
+              </Link>
+              <Link to="/ideas" className="flex items-center gap-1.5 text-white/60 hover:text-white px-3 py-1.5 rounded-full hover:bg-white/5 text-sm font-medium transition-all">
+                <Compass size={15} /><span className="hidden sm:inline">Browse</span>
+              </Link>
+              <Link to="/profile" className="flex items-center gap-1.5 text-white/60 hover:text-white px-3 py-1.5 rounded-full hover:bg-white/5 text-sm font-medium transition-all">
+                <User size={15} /><span className="hidden sm:inline">Profile</span>
+              </Link>
               {user.role === 'Admin' && (
-                <Link to="/admin" className="text-gray-300 hover:text-white flex items-center gap-1">Admin Panel</Link>
+                <Link to="/admin" className="flex items-center gap-1.5 text-red-400/70 hover:text-red-300 px-3 py-1.5 rounded-full hover:bg-red-500/10 text-sm font-medium transition-all">
+                  <ShieldCheck size={15} /><span className="hidden sm:inline">Admin</span>
+                </Link>
               )}
-              <button 
+              <button
                 onClick={handleLogout}
-                className="ml-4 flex items-center gap-2 bg-red-500/10 text-red-500 px-3 py-1.5 rounded hover:bg-red-500/20 transition-colors"
+                className="ml-2 flex items-center gap-1.5 liquid-glass rounded-full px-4 py-1.5 text-white/60 hover:text-red-400 text-sm font-medium transition-all"
               >
-                <LogOut size={16} /> Logout
+                <LogOut size={15} /> Logout
               </button>
             </>
           ) : (
             <>
-              <Link to="/login" className="text-gray-300 hover:text-white px-4 py-2">Login</Link>
-              <Link to="/register" className="bg-primary hover:bg-indigo-600 text-white px-4 py-2 rounded transition-colors">Sign Up</Link>
+              <Link to="/login" className="text-white/60 hover:text-white px-4 py-1.5 text-sm font-medium transition-all">Login</Link>
+              <Link to="/register" className="liquid-glass rounded-full px-5 py-1.5 text-white text-sm font-medium hover:bg-white/10 transition-colors">Sign Up</Link>
             </>
           )}
         </div>
