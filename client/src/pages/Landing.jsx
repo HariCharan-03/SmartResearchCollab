@@ -102,20 +102,7 @@ const Landing = () => {
             Accelerate your <em className="font-['Instrument_Serif'] italic font-medium">Research.</em>
           </h1>
           
-          <div className="max-w-xl w-full mx-auto mb-6">
-            <div className="liquid-glass rounded-full pl-6 pr-2 py-2 flex items-center gap-3">
-              <input 
-                type="email" 
-                placeholder="Enter your university email" 
-                className="bg-transparent border-none outline-none flex-1 text-white placeholder:text-white/40 text-base"
-              />
-              <Link to="/register" className="bg-white hover:bg-gray-200 transition-colors rounded-full p-3 text-black flex-shrink-0">
-                <ArrowRight size={20} />
-              </Link>
-            </div>
-          </div>
-          
-          <p className="text-white/80 text-sm leading-relaxed max-w-lg mb-8 px-4">
+          <p className="text-white/80 text-sm leading-relaxed max-w-lg mb-8 px-4 font-body font-light">
             Stay updated with the latest breakthroughs and project calls. Join our open-science network today and never miss an opportunity to collaborate.
           </p>
 

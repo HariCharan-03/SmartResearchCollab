@@ -74,7 +74,7 @@ const AdminPanel = () => {
         </button>
       </div>
 
-      <div className="glass-panel rounded-xl overflow-hidden">
+      <div className="liquid-glass rounded-xl overflow-hidden">
         {activeTab === 'users' && (
           <table className="w-full text-left">
             <thead className="bg-surface border-b border-gray-800">

@@ -26,7 +26,7 @@ const PostIdea = () => {
 
   return (
     <div className="max-w-2xl mx-auto py-10">
-      <div className="glass-panel p-8 rounded-2xl">
+      <div className="liquid-glass p-8 rounded-2xl">
         <h2 className="text-3xl font-bold mb-6">Launch New Project</h2>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>

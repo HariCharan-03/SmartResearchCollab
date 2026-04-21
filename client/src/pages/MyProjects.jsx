@@ -42,7 +42,7 @@ const MyProjects = () => {
           ))}
         </div>
       ) : (
-        <div className="text-center py-20 glass-panel rounded-xl">
+        <div className="text-center py-20 liquid-glass rounded-xl">
           <p className="text-xl text-gray-400">You are not part of any projects yet.</p>
         </div>
       )}

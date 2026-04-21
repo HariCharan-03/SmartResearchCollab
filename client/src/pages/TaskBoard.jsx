@@ -57,7 +57,7 @@ const TaskBoard = () => {
       </div>
       <div className="space-y-3">
         {items.map(task => (
-           <div key={task._id} className="glass-panel p-3 text-sm rounded cursor-pointer border border-gray-800 hover:border-primary/50 transition-colors">
+           <div key={task._id} className="liquid-glass p-3 text-sm rounded cursor-pointer border border-gray-800 hover:border-primary/50 transition-colors">
               <h4 className="font-medium mb-1">{task.title}</h4>
               {task.description && <p className="text-gray-400 text-xs mb-3">{task.description}</p>}
               
@@ -82,7 +82,7 @@ const TaskBoard = () => {
     <div className="space-y-8">
       <h1 className="text-3xl font-bold">Project Task Board</h1>
       
-      <div className="glass-panel p-6 rounded-xl">
+      <div className="liquid-glass p-6 rounded-xl">
         <h3 className="font-bold mb-4">Create New Task</h3>
         <form onSubmit={handleCreateTask} className="flex gap-4">
           <input 

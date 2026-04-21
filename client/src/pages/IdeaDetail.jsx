@@ -88,7 +88,7 @@ const IdeaDetail = () => {
   return (
     <div className="max-w-4xl mx-auto space-y-8">
       {/* Header Section */}
-      <div className="glass-panel p-8 rounded-2xl relative overflow-hidden">
+      <div className="liquid-glass p-8 rounded-2xl relative overflow-hidden">
         <div className="absolute top-0 right-0 w-64 h-64 bg-primary/20 rounded-full blur-[100px] -z-10"></div>
         <div className="flex justify-between items-start mb-4">
           <h1 className="text-4xl font-bold">{idea.title}</h1>
@@ -124,7 +124,7 @@ const IdeaDetail = () => {
           
           {/* Updates & Feedback Section */}
           {canViewUpdates && (
-            <div className="glass-panel p-6 rounded-xl">
+            <div className="liquid-glass p-6 rounded-xl">
               <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">Updates & Feedback</h2>
               
               <form onSubmit={handlePostUpdate} className="mb-8">
@@ -160,7 +160,7 @@ const IdeaDetail = () => {
 
           {/* Kanban Board Link for Members */}
           {isTeamMember && (
-             <div className="glass-panel p-6 rounded-xl flex justify-between items-center bg-gradient-to-r from-surface to-surface/40 hover:border-primary transition-colors cursor-pointer" onClick={() => navigate(`/projects/${id}/tasks`)}>
+             <div className="liquid-glass p-6 rounded-xl flex justify-between items-center bg-gradient-to-r from-surface to-surface/40 hover:border-primary transition-colors cursor-pointer" onClick={() => navigate(`/projects/${id}/tasks`)}>
                <div>
                  <h3 className="text-xl font-bold mb-1">Project Tasks</h3>
                  <p className="text-gray-400 text-sm">Manage tasks and track progress on the Kanban board.</p>
@@ -177,7 +177,7 @@ const IdeaDetail = () => {
         <div className="space-y-8">
           
           {/* Team Members */}
-          <div className="glass-panel p-6 rounded-xl">
+          <div className="liquid-glass p-6 rounded-xl">
             <h3 className="text-xl font-bold mb-4 flex items-center gap-2"><Users size={20} /> Team</h3>
             <ul className="space-y-3">
               {idea.teamMembers.map(member => (
@@ -191,7 +191,7 @@ const IdeaDetail = () => {
 
           {/* Action Box for non-members */}
           {!isTeamMember && user && user.role !== 'Mentor' && user.role !== 'Admin' && (
-            <div className="glass-panel p-6 rounded-xl border border-primary/30">
+            <div className="liquid-glass p-6 rounded-xl border border-primary/30">
               <h3 className="font-bold mb-2 text-lg">Interested in this project?</h3>
               <p className="text-sm text-gray-400 mb-4">Send a collaboration request to the creator.</p>
               <form onSubmit={handleJoinRequest}>

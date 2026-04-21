@@ -12,7 +12,11 @@ export default {
         primary: '#6366f1',
         secondary: '#ec4899',
         accent: '#8b5cf6',
-      }
+      },
+      fontFamily: {
+        heading: ["'Instrument Serif'", "serif"],
+        body: ["'Barlow'", "sans-serif"],
+      },
     },
   },
   plugins: [],

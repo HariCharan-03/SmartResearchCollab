@@ -42,7 +42,7 @@ const Profile = () => {
 
   return (
     <div className="max-w-2xl mx-auto py-10">
-      <div className="glass-panel p-8 rounded-2xl relative">
+      <div className="liquid-glass p-8 rounded-2xl relative">
         <button 
           onClick={() => navigate(-1)} 
           className="absolute top-4 right-4 p-2 bg-surface/50 hover:bg-surface text-gray-400 hover:text-white rounded-full transition-colors"
