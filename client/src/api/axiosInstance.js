@@ -1,10 +1,12 @@
 import axios from 'axios';
 
+// In production (Vercel), VITE_API_URL is set as an environment variable.
+// Locally it falls back to localhost:5001.
 const api = axios.create({
-  baseURL: 'http://localhost:5001/api',
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5001/api',
 });
 
-// Add a request interceptor to include the JWT token
+// Attach JWT token to every request automatically
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
@@ -13,9 +15,7 @@ api.interceptors.request.use(
     }
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
 export default api;
