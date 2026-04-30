@@ -2,6 +2,11 @@ const Idea = require('../models/Idea');
 
 exports.createIdea = async (req, res) => {
   try {
+    // Only Project Creators and Admins can publish ideas
+    if (req.user.role !== 'Project Creator' && req.user.role !== 'Admin') {
+      return res.status(403).json({ message: 'Only Project Creators can publish ideas' });
+    }
+
     const { title, description, tags } = req.body;
     const idea = await Idea.create({
       title,

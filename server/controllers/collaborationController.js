@@ -28,7 +28,8 @@ exports.getRequestsForIdea = async (req, res) => {
     const idea = await Idea.findById(req.params.ideaId);
     if (!idea) return res.status(404).json({ message: 'Idea not found' });
 
-    if (idea.createdBy.toString() !== req.user.id && req.user.role !== 'Admin' && req.user.role !== 'Mentor') {
+    // Only the project creator or Admin can view requests for a specific project
+    if (idea.createdBy.toString() !== req.user.id && req.user.role !== 'Admin') {
       return res.status(403).json({ message: 'Not authorized' });
     }
 
@@ -49,13 +50,11 @@ exports.respondToRequest = async (req, res) => {
     const idea = await Idea.findById(request.ideaId);
     if (!idea) return res.status(404).json({ message: 'Idea not found' });
 
-    // Mentors have global access to approve/reject any request.
-    // Admins can also act on all requests.
-    // Project Creators can only manage requests for their own projects.
-    const isMentorOrAdmin = req.user.role === 'Mentor' || req.user.role === 'Admin';
+    // Only Project Creator (owner of the idea) or Admin can accept/reject
     const isCreator = idea.createdBy.toString() === req.user.id;
-    if (!isMentorOrAdmin && !isCreator) {
-      return res.status(403).json({ message: 'Not authorized' });
+    const isAdmin = req.user.role === 'Admin';
+    if (!isCreator && !isAdmin) {
+      return res.status(403).json({ message: 'Only the project creator can accept or reject requests' });
     }
 
     request.status = status;
@@ -90,9 +89,10 @@ exports.getIncomingRequests = async (req, res) => {
   try {
     let query = { status: 'Pending' };
 
-    // If Mentor, they see all pending requests globally.
-    // If Project Creator, they only see requests for ideas they created.
-    if (req.user.role !== 'Mentor' && req.user.role !== 'Admin') {
+    // Admin sees all pending requests globally.
+    // Project Creator sees only requests for ideas they created.
+    // Mentor does NOT get incoming requests (they are reviewers, not decision-makers).
+    if (req.user.role !== 'Admin') {
       const myIdeas = await Idea.find({ createdBy: req.user.id });
       const ideaIds = myIdeas.map(idea => idea._id);
       query.ideaId = { $in: ideaIds };

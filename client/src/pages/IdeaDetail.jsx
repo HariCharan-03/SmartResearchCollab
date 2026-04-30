@@ -109,8 +109,10 @@ const IdeaDetail = () => {
 
   const isCreatorOrAdmin = user && (idea.createdBy._id === user._id || user.role === 'Admin');
   const isTeamMember = user && idea.teamMembers.some(m => m.userId._id === user._id);
+  // Mentor can see updates to review & give feedback. Team members, creators and admins also can.
   const canViewUpdates = isTeamMember || (user && user.role === 'Mentor') || isCreatorOrAdmin;
-  const canManageRequests = user && (user.role === 'Mentor' || isCreatorOrAdmin);
+  // ONLY the Project Creator (owner) and Admin can accept/reject requests
+  const canManageRequests = user && isCreatorOrAdmin;
 
   return (
     <div className="max-w-4xl mx-auto space-y-8">

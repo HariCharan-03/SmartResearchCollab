@@ -19,14 +19,20 @@ const Dashboard = () => {
             <LayoutTemplate size={16} /> My Projects
           </Link>
           <Link to="/ideas" className="flex items-center gap-2 px-4 py-3 bg-white/5 hover:bg-white/10 text-white rounded-2xl transition-all text-sm font-medium">
-            <Users size={16} /> Find Teams
+            <Users size={16} /> {user?.role === 'Mentor' ? 'Browse Research' : 'Find Teams'}
           </Link>
           <Link to="/profile" className="flex items-center gap-2 px-4 py-3 bg-white/5 hover:bg-white/10 text-white rounded-2xl transition-all text-sm font-medium">
             <Activity size={16} /> Profile Settings
           </Link>
+
+          {user?.role === 'Project Creator' && (
+            <Link to="/post-idea" className="flex items-center gap-2 px-4 py-3 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 rounded-2xl transition-all text-sm font-medium border border-emerald-500/10">
+              <Plus size={16} /> Post New Idea
+            </Link>
+          )}
           
           {user?.role === 'Admin' && (
-            <Link to="/admin" className="flex items-center gap-2 px-4 py-3 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-2xl transition-all text-sm font-medium mt-6 border border-red-500/10">
+            <Link to="/admin" className="flex items-center gap-2 px-4 py-3 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-2xl transition-all text-sm font-medium border border-red-500/10">
                Admin Panel
             </Link>
           )}

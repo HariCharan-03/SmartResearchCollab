@@ -22,8 +22,8 @@ const MyProjects = () => {
           api.get('/collaborations/my-requests')
         ];
 
-        // Fetch incoming requests if Mentor or Creator
-        if (user.role === 'Mentor' || user.role === 'Project Creator' || user.role === 'Admin') {
+        // Fetch incoming requests only for Project Creator and Admin (they manage requests)
+        if (user.role === 'Project Creator' || user.role === 'Admin') {
           fetchPromises.push(api.get('/collaborations/incoming-requests'));
         }
 
@@ -66,8 +66,14 @@ const MyProjects = () => {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold mb-2">My Dashboard</h1>
-        <p className="text-gray-400">Manage your projects and applications.</p>
+        <h1 className="text-3xl font-bold mb-2">
+          {user?.role === 'Mentor' ? 'Research Reviews' : 'My Dashboard'}
+        </h1>
+        <p className="text-gray-400">
+          {user?.role === 'Mentor'
+            ? 'Browse and give feedback on active research projects.'
+            : 'Manage your projects and applications.'}
+        </p>
       </div>
 
       {/* Incoming Requests Panel for Mentors/Creators */}

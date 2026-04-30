@@ -16,6 +16,12 @@ exports.registerUser = async (req, res) => {
       }
     }
 
+    if (role === 'Project Creator') {
+      if (accessCode !== process.env.PROJECT_CREATOR_ACCESS_CODE) {
+        return res.status(400).json({ message: 'Invalid Project Creator access code' });
+      }
+    }
+
     const userExists = await User.findOne({ email });
     if (userExists) {
       return res.status(400).json({ message: 'user with that email already exists' });
