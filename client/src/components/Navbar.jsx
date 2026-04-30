@@ -15,7 +15,7 @@ const Navbar = () => {
   return (
     <nav className="sticky top-0 z-50 px-6 py-4">
       <div className="liquid-glass rounded-full max-w-6xl mx-auto px-5 py-2.5 flex justify-between items-center" style={{background: 'rgba(5,5,10,0.7)'}}>
-        <Link to="/" className="flex items-center gap-2 group">
+        <Link to={user ? "/dashboard" : "/"} className="flex items-center gap-2 group">
           <span className="text-white font-semibold text-lg tracking-tight">ResearchHub</span>
         </Link>
 

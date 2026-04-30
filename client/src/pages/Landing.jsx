@@ -1,14 +1,20 @@
-import React, { useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useRef, useContext } from 'react';
+import { Link, Navigate } from 'react-router-dom';
 import { Globe, ArrowRight, Users, Book } from 'lucide-react';
+import { AuthContext } from '../context/AuthContext';
 import AboutSection from '../components/landing/AboutSection';
 import FeaturedVideoSection from '../components/landing/FeaturedVideoSection';
 import PhilosophySection from '../components/landing/PhilosophySection';
 import ServicesSection from '../components/landing/ServicesSection';
 
 const Landing = () => {
+  const { user } = useContext(AuthContext);
   const videoRef = useRef(null);
   const fadeAnimationRef = useRef(null);
+
+  if (user) {
+    return <Navigate to="/dashboard" replace />;
+  }
 
   useEffect(() => {
     const video = videoRef.current;

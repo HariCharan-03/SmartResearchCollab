@@ -45,9 +45,13 @@ const App = () => {
         <Route path="/manifesto" element={<Manifesto />} />
         <Route path="/features" element={<Features />} />
 
-        {/* ── Public app pages (with AppShell) ── */}
-        <Route path="/ideas" element={<Shell><BrowseIdeas /></Shell>} />
-        <Route path="/ideas/:id" element={<Shell><IdeaDetail /></Shell>} />
+        {/* ── Protected routes (with AppShell) ── */}
+        <Route path="/ideas" element={
+          <ProtectedRoute><Shell><BrowseIdeas /></Shell></ProtectedRoute>
+        } />
+        <Route path="/ideas/:id" element={
+          <ProtectedRoute><Shell><IdeaDetail /></Shell></ProtectedRoute>
+        } />
 
         {/* ── Protected routes (with AppShell) ── */}
         <Route path="/dashboard" element={

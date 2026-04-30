@@ -28,12 +28,6 @@ const FeaturedVideoSection = () => {
               We bridge the gap between academic vision and real-world incubation. Every project starts with a brilliant hypothesis, and our decentralized network finds the collaborators to prove it.
             </p>
           </div>
-          
-          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <Link to="/ideas" className="liquid-glass rounded-full px-8 py-3 text-white text-sm font-medium inline-block flex-shrink-0">
-              Explore Projects
-            </Link>
-          </motion.div>
         </div>
       </motion.div>
     </section>
