@@ -34,11 +34,11 @@ const seedData = async () => {
     const salt = await bcrypt.genSalt(10);
     const password = await bcrypt.hash('password123', salt);
 
-    const admin = await User.create({ name: 'Admin One', email: 'admin@research.hub', password, role: 'Admin', skills: ['Management'], interests: ['Everything'] });
-    const creator = await User.create({ name: 'Dr. Sarah', email: 'sarah@research.hub', password, role: 'Project Creator', skills: ['AI', 'Data Science'], interests: ['Agriculture', 'Tech'] });
-    const mentor = await User.create({ name: 'Prof. John', email: 'john@research.hub', password, role: 'Mentor', skills: ['Reviewing', 'Architecture'], interests: ['Quantum Computing'] });
+    const admin   = await User.create({ name: 'Admin One',   email: 'admin@research.hub',  password, role: 'Admin',           skills: ['Management'],           interests: ['Everything'] });
+    const creator = await User.create({ name: 'Dr. Sarah',   email: 'sarah@research.hub',  password, role: 'Project Creator', skills: ['AI', 'Data Science'],    interests: ['Agriculture', 'Tech'] });
+    const mentor  = await User.create({ name: 'Prof. John',  email: 'john@research.hub',   password, role: 'Mentor',          skills: ['Reviewing', 'Architecture'], interests: ['Quantum Computing'] });
     const student1 = await User.create({ name: 'Hari Charan', email: 'hari@research.hub', password, role: 'Student', skills: ['React', 'Node.js', 'Python'], interests: ['Full Stack', 'Web3'] });
-    const student2 = await User.create({ name: 'Alice', email: 'alice@research.hub', password, role: 'Student', skills: ['Design', 'UI/UX'], interests: ['Accessibility'] });
+    const student2 = await User.create({ name: 'Alice',       email: 'alice@research.hub', password, role: 'Student', skills: ['Design', 'UI/UX'],           interests: ['Accessibility'] });
 
     // Ideas
     const idea1 = await Idea.create({
@@ -138,7 +138,14 @@ const seedData = async () => {
     // Updates
     await Update.create({ projectId: idea1._id, userId: creator._id, message: 'We just hit 94% accuracy on training data!' });
 
-    console.log('Database seeded successfully!');
+    console.log('\n✅ Database seeded successfully!');
+    console.log('\n═══════════════ LOGIN CREDENTIALS ═══════════════');
+    console.log('🔵 Student  : hari@research.hub   / password123  (no code)');
+    console.log('🔵 Student  : alice@research.hub  / password123  (no code)');
+    console.log('🟢 Creator  : sarah@research.hub  / password123  + CREATOR2026');
+    console.log('🟣 Mentor   : john@research.hub   / password123  + 2026');
+    console.log('🔴 Admin    : admin@research.hub  / password123  (Admin login)');
+    console.log('═════════════════════════════════════════════════\n');
     process.exit();
 
   } catch (error) {
