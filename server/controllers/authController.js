@@ -8,7 +8,13 @@ const generateToken = (id) => {
 
 exports.registerUser = async (req, res) => {
   try {
-    const { name, email, password, role, skills, interests } = req.body;
+    const { name, email, password, role, accessCode, skills, interests } = req.body;
+
+    if (role === 'Mentor') {
+      if (accessCode !== process.env.MENTOR_ACCESS_CODE) {
+        return res.status(400).json({ message: 'Invalid mentor access code' });
+      }
+    }
 
     const userExists = await User.findOne({ email });
     if (userExists) {

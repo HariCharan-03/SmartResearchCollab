@@ -12,3 +12,5 @@ services:
         sync: false
       - key: JWT_SECRET
         sync: false
+      - key: MENTOR_ACCESS_CODE
+        value: smart_mentor_123

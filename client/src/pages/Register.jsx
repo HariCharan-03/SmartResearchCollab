@@ -7,7 +7,7 @@ import toast from 'react-hot-toast';
 
 const Register = () => {
   const [formData, setFormData] = useState({
-    name: '', email: '', password: '', confirmPassword: '', role: 'Student'
+    name: '', email: '', password: '', confirmPassword: '', role: 'Student', accessCode: ''
   });
   const { register } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -24,6 +24,10 @@ const Register = () => {
     e.preventDefault();
     if (formData.password !== formData.confirmPassword) {
       toast.error('Passwords do not match');
+      return;
+    }
+    if (formData.role === 'Mentor' && !formData.accessCode) {
+      toast.error('Mentor access code is required');
       return;
     }
     const success = await register(formData);
@@ -128,6 +132,24 @@ const Register = () => {
                 ))}
               </select>
             </div>
+
+            {formData.role === 'Mentor' && (
+              <motion.div 
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                className="liquid-glass rounded-2xl px-5 py-3 border border-indigo-500/30"
+              >
+                <label className="text-indigo-300 text-xs font-body font-medium tracking-widest uppercase block mb-1.5 flex items-center gap-2">
+                  <span>Mentor Access Code</span>
+                  <span className="bg-indigo-500/20 text-indigo-200 px-2 py-0.5 rounded-full text-[10px]">Required</span>
+                </label>
+                <input
+                  type="text" name="accessCode" value={formData.accessCode} onChange={handleChange} required
+                  placeholder="Enter secret code"
+                  className="w-full bg-transparent border-none outline-none text-white placeholder:text-white/25 text-base font-body font-light"
+                />
+              </motion.div>
+            )}
 
             <motion.button
               type="submit"
