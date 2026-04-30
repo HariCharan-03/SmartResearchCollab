@@ -51,11 +51,15 @@ exports.registerUser = async (req, res) => {
 
 exports.loginUser = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, accessCode } = req.body;
 
     const user = await User.findOne({ email });
 
     if (user && (await bcrypt.compare(password, user.password))) {
+      if (user.role === 'Mentor' && accessCode !== process.env.MENTOR_ACCESS_CODE) {
+        return res.status(401).json({ message: 'Mentor access code required or invalid' });
+      }
+
       res.json({
         _id: user.id,
         name: user.name,
