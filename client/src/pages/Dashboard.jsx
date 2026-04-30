@@ -1,12 +1,22 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
-import { Plus, LayoutTemplate, Activity, Users, ArrowUpRight } from 'lucide-react';
+import { Plus, LayoutTemplate, Activity, Users, ArrowUpRight, Bell } from 'lucide-react';
+import api from '../api/axiosInstance';
 
 const Dashboard = () => {
   const { user } = useContext(AuthContext);
   const [stats, setStats] = useState({ totalRec: 0, pending: 0 });
+  const [pendingCount, setPendingCount] = useState(0);
   const firstName = user?.name?.split(' ')[0] || 'Researcher';
+
+  useEffect(() => {
+    if (user?.role === 'Project Creator' || user?.role === 'Admin') {
+      api.get('/collaborations/incoming-requests')
+        .then(res => setPendingCount(res.data.length))
+        .catch(() => {});
+    }
+  }, [user]);
   
   return (
     <div className="flex flex-col lg:flex-row gap-8 font-body">
@@ -26,9 +36,19 @@ const Dashboard = () => {
           </Link>
 
           {user?.role === 'Project Creator' && (
-            <Link to="/post-idea" className="flex items-center gap-2 px-4 py-3 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 rounded-2xl transition-all text-sm font-medium border border-emerald-500/10">
-              <Plus size={16} /> Post New Idea
-            </Link>
+            <>
+              <Link to="/post-idea" className="flex items-center gap-2 px-4 py-3 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 rounded-2xl transition-all text-sm font-medium border border-emerald-500/10">
+                <Plus size={16} /> Post New Idea
+              </Link>
+              <Link to="/requests" className="flex items-center justify-between px-4 py-3 bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 rounded-2xl transition-all text-sm font-medium border border-amber-500/10">
+                <span className="flex items-center gap-2"><Bell size={16} /> Requests</span>
+                {pendingCount > 0 && (
+                  <span className="bg-amber-500 text-black text-xs font-bold px-2 py-0.5 rounded-full min-w-[20px] text-center">
+                    {pendingCount}
+                  </span>
+                )}
+              </Link>
+            </>
           )}
           
           {user?.role === 'Admin' && (

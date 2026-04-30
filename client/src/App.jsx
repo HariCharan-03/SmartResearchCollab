@@ -20,6 +20,7 @@ import TaskBoard from './pages/TaskBoard';
 import Profile from './pages/Profile';
 import MyProjects from './pages/MyProjects';
 import AdminPanel from './pages/AdminPanel';
+import Requests from './pages/Requests';
 
 // Helper: wrap a page in AppShell
 const Shell = ({ children }) => <AppShell>{children}</AppShell>;
@@ -68,6 +69,9 @@ const App = () => {
         } />
         <Route path="/post-idea" element={
           <ProtectedRoute allowedRoles={['Project Creator']}><Shell><PostIdea /></Shell></ProtectedRoute>
+        } />
+        <Route path="/requests" element={
+          <ProtectedRoute allowedRoles={['Project Creator', 'Admin']}><Shell><Requests /></Shell></ProtectedRoute>
         } />
         <Route path="/projects/:id/tasks" element={
           <ProtectedRoute><Shell><TaskBoard /></Shell></ProtectedRoute>
