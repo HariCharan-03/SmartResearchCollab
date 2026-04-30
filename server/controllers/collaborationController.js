@@ -75,3 +75,22 @@ exports.getMyRequests = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+exports.getIncomingRequests = async (req, res) => {
+  try {
+    // Mentors/Creators only see requests for ideas they created
+    const myIdeas = await Idea.find({ createdBy: req.user.id });
+    const ideaIds = myIdeas.map(idea => idea._id);
+
+    const requests = await CollaborationRequest.find({
+      ideaId: { $in: ideaIds },
+      status: 'Pending'
+    })
+      .populate('userId', 'name email role skills')
+      .populate('ideaId', 'title');
+
+    res.json(requests);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

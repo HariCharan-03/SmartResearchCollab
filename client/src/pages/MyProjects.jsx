@@ -2,20 +2,34 @@ import React, { useState, useEffect, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import api from '../api/axiosInstance';
 import IdeaCard from '../components/IdeaCard';
+import { Check, X } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 const MyProjects = () => {
   const [ideas, setIdeas] = useState([]);
   const [requests, setRequests] = useState([]);
+  const [incomingRequests, setIncomingRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const { user } = useContext(AuthContext);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [ideasRes, reqsRes] = await Promise.all([
+        const fetchPromises = [
           api.get('/ideas'),
           api.get('/collaborations/my-requests')
-        ]);
+        ];
+
+        // Fetch incoming requests if Mentor or Creator
+        if (user.role === 'Mentor' || user.role === 'Project Creator' || user.role === 'Admin') {
+          fetchPromises.push(api.get('/collaborations/incoming-requests'));
+        }
+
+        const results = await Promise.all(fetchPromises);
+        
+        const ideasRes = results[0];
+        const reqsRes = results[1];
+        const incomingRes = results[2]; // may be undefined
         
         const myIdeas = ideasRes.data.filter(idea => 
           idea.createdBy._id === user._id || 
@@ -23,6 +37,7 @@ const MyProjects = () => {
         );
         setIdeas(myIdeas);
         setRequests(reqsRes.data);
+        if (incomingRes) setIncomingRequests(incomingRes.data);
       } catch (err) {
         console.error(err);
       } finally {
@@ -32,14 +47,53 @@ const MyProjects = () => {
     if (user) fetchData();
   }, [user]);
 
+  const handleRespond = async (requestId, status) => {
+    try {
+      await api.put(`/collaborations/${requestId}`, { status });
+      toast.success(`Request ${status.toLowerCase()} successfully`);
+      // Remove from incoming list locally
+      setIncomingRequests(prev => prev.filter(req => req._id !== requestId));
+    } catch (err) {
+      toast.error('Failed to respond to request');
+    }
+  };
+
   if (loading) return <div className="flex justify-center p-20"><div className="animate-spin rounded-full h-12 w-12 border-t-2 border-primary"></div></div>;
 
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold mb-2">My Projects</h1>
-        <p className="text-gray-400">Projects you've created or joined.</p>
+        <h1 className="text-3xl font-bold mb-2">My Dashboard</h1>
+        <p className="text-gray-400">Manage your projects and applications.</p>
       </div>
+
+      {/* Incoming Requests Panel for Mentors/Creators */}
+      {incomingRequests.length > 0 && (
+        <div className="mb-10 liquid-glass p-6 rounded-xl border border-indigo-500/30 shadow-[0_0_20px_rgba(99,102,241,0.1)]">
+          <h2 className="text-xl font-bold mb-4 flex items-center gap-2 text-indigo-300">Action Required: New Applications</h2>
+          <div className="space-y-3">
+            {incomingRequests.map(req => (
+              <div key={req._id} className="bg-surface/50 border border-indigo-500/20 p-4 rounded-lg flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
+                <div>
+                  <p className="font-medium text-white text-lg">
+                    {req.userId.name} <span className="text-xs text-indigo-300 ml-2">({req.userId.role})</span>
+                  </p>
+                  <p className="text-sm text-primary mb-1">Applied for: <span className="font-semibold">{req.ideaId?.title}</span></p>
+                  <p className="text-sm text-gray-400 italic">"{req.message}"</p>
+                </div>
+                <div className="flex gap-3 shrink-0">
+                  <button onClick={() => handleRespond(req._id, 'Approved')} className="flex items-center gap-1 bg-green-500/20 hover:bg-green-500/30 text-green-400 px-4 py-2 rounded-full transition-colors font-medium text-sm">
+                    <Check size={16} /> Accept
+                  </button>
+                  <button onClick={() => handleRespond(req._id, 'Rejected')} className="flex items-center gap-1 bg-red-500/20 hover:bg-red-500/30 text-red-400 px-4 py-2 rounded-full transition-colors font-medium text-sm">
+                    <X size={16} /> Reject
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {ideas.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
