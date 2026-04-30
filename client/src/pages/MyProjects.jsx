@@ -33,10 +33,15 @@ const MyProjects = () => {
         const reqsRes = results[1];
         const incomingRes = results[2]; // may be undefined
         
-        const myIdeas = ideasRes.data.filter(idea => 
-          idea.createdBy._id === user._id || 
-          idea.teamMembers.some(m => m.userId._id === user._id || m.userId === user._id)
-        );
+        const myIdeas = ideasRes.data.filter(idea => {
+          const creatorMatch = idea.createdBy._id === user._id || idea.createdBy === user._id;
+          const memberMatch = idea.teamMembers.some(m => {
+            // userId may be a populated object {_id, name} or a raw string
+            const memberId = m.userId?._id || m.userId;
+            return String(memberId) === String(user._id);
+          });
+          return creatorMatch || memberMatch;
+        });
         setIdeas(myIdeas);
         setRequests(reqsRes.data);
         if (incomingRes) setIncomingRequests(incomingRes.data);
