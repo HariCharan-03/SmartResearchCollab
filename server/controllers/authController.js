@@ -62,8 +62,13 @@ exports.loginUser = async (req, res) => {
     const user = await User.findOne({ email });
 
     if (user && (await bcrypt.compare(password, user.password))) {
+      // Mentor must provide the mentor code to login
       if (user.role === 'Mentor' && accessCode !== process.env.MENTOR_ACCESS_CODE) {
         return res.status(401).json({ message: 'Mentor access code required or invalid' });
+      }
+      // Project Creator must also provide their code to login
+      if (user.role === 'Project Creator' && accessCode !== process.env.PROJECT_CREATOR_ACCESS_CODE) {
+        return res.status(401).json({ message: 'Project Creator access code required or invalid' });
       }
 
       res.json({
