@@ -41,7 +41,7 @@ exports.getRequestsForIdea = async (req, res) => {
 
 exports.respondToRequest = async (req, res) => {
   try {
-    const { status } = req.body; // Approved or Rejected
+    const { status, responseMessage } = req.body; // Approved or Rejected, plus optional message
     const request = await CollaborationRequest.findById(req.params.requestId);
     
     if (!request) return res.status(404).json({ message: 'Request not found' });
@@ -52,6 +52,9 @@ exports.respondToRequest = async (req, res) => {
     }
 
     request.status = status;
+    if (responseMessage) {
+      request.responseMessage = responseMessage;
+    }
     await request.save();
 
     if (status === 'Approved') {
@@ -78,14 +81,17 @@ exports.getMyRequests = async (req, res) => {
 
 exports.getIncomingRequests = async (req, res) => {
   try {
-    // Mentors/Creators only see requests for ideas they created
-    const myIdeas = await Idea.find({ createdBy: req.user.id });
-    const ideaIds = myIdeas.map(idea => idea._id);
+    let query = { status: 'Pending' };
 
-    const requests = await CollaborationRequest.find({
-      ideaId: { $in: ideaIds },
-      status: 'Pending'
-    })
+    // If Mentor, they see all pending requests globally.
+    // If Project Creator, they only see requests for ideas they created.
+    if (req.user.role !== 'Mentor' && req.user.role !== 'Admin') {
+      const myIdeas = await Idea.find({ createdBy: req.user.id });
+      const ideaIds = myIdeas.map(idea => idea._id);
+      query.ideaId = { $in: ideaIds };
+    }
+
+    const requests = await CollaborationRequest.find(query)
       .populate('userId', 'name email role skills')
       .populate('ideaId', 'title');
 

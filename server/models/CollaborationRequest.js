@@ -4,6 +4,7 @@ const CollaborationRequestSchema = new mongoose.Schema({
   ideaId: { type: mongoose.Schema.Types.ObjectId, ref: 'Idea', required: true },
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   message: { type: String },
+  responseMessage: { type: String },
   status: { 
     type: String, 
     enum: ['Pending', 'Approved', 'Rejected'], 
