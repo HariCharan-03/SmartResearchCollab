@@ -38,3 +38,20 @@ A full-stack web application designed to bridge the gap between academic vision 
 **Ideas**
 - `GET /api/ideas` - Fetch the public feed of research ideas
 - `POST /api/ideas` - Publish a new research idea (Requires authentication)
+
+## 📁 Project Folder Structure
+
+### Frontend (`/client`)
+Built with Vite + React. This folder contains all the user-facing interfaces and logic.
+- **`/src/pages`**: Contains the full-screen views mapped to routes (e.g., `Landing.jsx`, `Dashboard.jsx`, `Login.jsx`).
+- **`/src/components`**: Reusable UI blocks that make up the pages (e.g., `Navbar.jsx`, `IdeaCard.jsx`).
+- **`/src/context`**: Global React state providers, such as `AuthContext.jsx` which manages whether the user is logged in.
+- **`/src/api`**: Axios configuration (`axiosInstance.js`) to help the frontend easily talk to the backend, attaching the JWT to requests.
+- **`/src/assets`**: Static files like images, SVGs, or custom fonts.
+
+### Backend (`/server`)
+Built with Node.js + Express. This acts as the brain and handles the database.
+- **`/models`**: Mongoose schemas that define how your MongoDB data is structured (e.g., `User.js`, `Idea.js`).
+- **`/routes`**: The entry points for API calls. These map URLs to specific controller functions (e.g., `/api/auth/login`).
+- **`/controllers`**: The actual business logic. When a route is hit, the controller handles the math, database saving, and sends the response back to the frontend.
+- **`/middleware`**: Security checkpoints. Functions here run *before* the controller (e.g., checking if the JWT token is valid before letting someone delete a project).
