@@ -65,3 +65,13 @@ exports.respondToRequest = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+exports.getMyRequests = async (req, res) => {
+  try {
+    const requests = await CollaborationRequest.find({ userId: req.user.id })
+      .populate('ideaId', 'title status');
+    res.json(requests);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
