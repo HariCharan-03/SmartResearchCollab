@@ -47,7 +47,14 @@ exports.respondToRequest = async (req, res) => {
     if (!request) return res.status(404).json({ message: 'Request not found' });
 
     const idea = await Idea.findById(request.ideaId);
-    if (idea.createdBy.toString() !== req.user.id && req.user.role !== 'Admin' && req.user.role !== 'Mentor') {
+    if (!idea) return res.status(404).json({ message: 'Idea not found' });
+
+    // Mentors have global access to approve/reject any request.
+    // Admins can also act on all requests.
+    // Project Creators can only manage requests for their own projects.
+    const isMentorOrAdmin = req.user.role === 'Mentor' || req.user.role === 'Admin';
+    const isCreator = idea.createdBy.toString() === req.user.id;
+    if (!isMentorOrAdmin && !isCreator) {
       return res.status(403).json({ message: 'Not authorized' });
     }
 
