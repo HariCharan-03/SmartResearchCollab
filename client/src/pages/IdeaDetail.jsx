@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import api from '../api/axiosInstance';
 import { AuthContext } from '../context/AuthContext';
 import toast from 'react-hot-toast';
-import { Tag, Users, CheckCircle, Clock, Trash2, Send } from 'lucide-react';
+import { Tag, Users, CheckCircle, Clock, Trash2, Send, Check, X } from 'lucide-react';
 
 const IdeaDetail = () => {
   const { id } = useParams();
@@ -15,11 +15,15 @@ const IdeaDetail = () => {
   const [requestMessage, setRequestMessage] = useState('');
   const [updateMessage, setUpdateMessage] = useState('');
   const [updates, setUpdates] = useState([]);
+  const [requests, setRequests] = useState([]);
 
   useEffect(() => {
     fetchIdea();
     fetchUpdates();
-  }, [id]);
+    if (user && (user.role === 'Mentor' || user.role === 'Admin' || user.role === 'Project Creator')) {
+      fetchRequests();
+    }
+  }, [id, user]);
 
   const fetchIdea = async () => {
     try {
@@ -40,6 +44,17 @@ const IdeaDetail = () => {
       setUpdates(res.data);
     } catch (err) {
       console.log('User might not have access to updates yet');
+    }
+  };
+
+  const fetchRequests = async () => {
+    if(!user) return;
+    try {
+      const res = await api.get(`/collaborations/project/${id}`);
+      // Filter only pending requests
+      setRequests(res.data.filter(r => r.status === 'Pending'));
+    } catch (err) {
+      console.log('Could not fetch requests');
     }
   };
 
@@ -66,6 +81,17 @@ const IdeaDetail = () => {
     }
   };
 
+  const handleRespond = async (requestId, status) => {
+    try {
+      await api.put(`/collaborations/${requestId}`, { status });
+      toast.success(`Request ${status.toLowerCase()} successfully`);
+      fetchRequests();
+      fetchIdea(); // refresh team members
+    } catch (err) {
+      toast.error('Failed to respond to request');
+    }
+  };
+
   const handleDelete = async () => {
     if(window.confirm('Are you sure you want to delete this project?')) {
       try {
@@ -84,6 +110,7 @@ const IdeaDetail = () => {
   const isCreatorOrAdmin = user && (idea.createdBy._id === user._id || user.role === 'Admin');
   const isTeamMember = user && idea.teamMembers.some(m => m.userId._id === user._id);
   const canViewUpdates = isTeamMember || (user && user.role === 'Mentor') || isCreatorOrAdmin;
+  const canManageRequests = user && (user.role === 'Mentor' || isCreatorOrAdmin);
 
   return (
     <div className="max-w-4xl mx-auto space-y-8">
@@ -122,6 +149,31 @@ const IdeaDetail = () => {
         {/* Main Content Area */}
         <div className="md:col-span-2 space-y-8">
           
+          {/* Collaboration Requests Section */}
+          {canManageRequests && requests.length > 0 && (
+            <div className="liquid-glass p-6 rounded-xl border border-indigo-500/30">
+              <h2 className="text-xl font-bold mb-4 flex items-center gap-2 text-indigo-300">Pending Requests</h2>
+              <div className="space-y-3">
+                {requests.map(req => (
+                  <div key={req._id} className="bg-surface/50 border border-indigo-500/20 p-4 rounded-lg flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
+                    <div>
+                      <p className="font-medium text-white">{req.userId.name} <span className="text-xs text-indigo-300 ml-2">({req.userId.role})</span></p>
+                      <p className="text-sm text-gray-400 mt-1 italic">"{req.message}"</p>
+                    </div>
+                    <div className="flex gap-2 shrink-0">
+                      <button onClick={() => handleRespond(req._id, 'Approved')} className="bg-green-500/20 hover:bg-green-500/30 text-green-400 p-2 rounded-full transition-colors" title="Accept">
+                        <Check size={18} />
+                      </button>
+                      <button onClick={() => handleRespond(req._id, 'Rejected')} className="bg-red-500/20 hover:bg-red-500/30 text-red-400 p-2 rounded-full transition-colors" title="Reject">
+                        <X size={18} />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Updates & Feedback Section */}
           {canViewUpdates && (
             <div className="liquid-glass p-6 rounded-xl">

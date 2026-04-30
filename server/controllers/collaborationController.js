@@ -28,7 +28,7 @@ exports.getRequestsForIdea = async (req, res) => {
     const idea = await Idea.findById(req.params.ideaId);
     if (!idea) return res.status(404).json({ message: 'Idea not found' });
 
-    if (idea.createdBy.toString() !== req.user.id && req.user.role !== 'Admin') {
+    if (idea.createdBy.toString() !== req.user.id && req.user.role !== 'Admin' && req.user.role !== 'Mentor') {
       return res.status(403).json({ message: 'Not authorized' });
     }
 
@@ -47,7 +47,7 @@ exports.respondToRequest = async (req, res) => {
     if (!request) return res.status(404).json({ message: 'Request not found' });
 
     const idea = await Idea.findById(request.ideaId);
-    if (idea.createdBy.toString() !== req.user.id && req.user.role !== 'Admin') {
+    if (idea.createdBy.toString() !== req.user.id && req.user.role !== 'Admin' && req.user.role !== 'Mentor') {
       return res.status(403).json({ message: 'Not authorized' });
     }
 
